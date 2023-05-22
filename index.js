@@ -1,138 +1,108 @@
-const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
-const db = require('./db');
-const Organization = require('./models/organization.js');
+import express from "express";
+import dotenv from "dotenv";
+import { ApolloServer, gql } from 'apollo-server-express';
+import http from 'http';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import mongoose from "mongoose";
+import cors from 'cors'
+import {loadFilesSync} from '@graphql-tools/load-files'
+import path from 'path'
+import { fileURLToPath } from 'url';
+import { ApolloServerPluginInlineTrace } from "apollo-server-core";
+import url from 'url';
+import {mergeTypeDefs, mergeResolvers} from '@graphql-tools/merge'
+import { makeExecutableSchema }from '@graphql-tools/schema';
 
+//resolvers to be refactor later
 
-const typeDefs = gql`
-  type Organization {
-    id: ID!
-    organisationName: String!
-    abnDuns: Int
-    organisationType: String!
-    phoneNumber: Int
-    organisationAddress: String
-    organisationCountry: String!
-    referenceId: String!
-    adminFirstName: String!
-    adminLastName: String!
-    adminEmailAddress: String!
-    adminMobileNumber: Int!
-    adminPassword: String!
-    billingContactName: String
-    billingEmailAddress: String
-    billingAddress: String
-    billingPhoneNumber: String
-  }
+// import Advertisement from './controllers/v2/resolver/AdvertisementResolver.js'
+import Organization from './controllers/v2/resolver/OrganizationResolver.js'
+import Admin from './controllers/v2/resolver/AdminResolver.js'
+dotenv.config();
 
-  input OrganizationInput {
-    organisationName: String!
-    abnDuns: Int
-    organisationType: String!
-    phoneNumber: Int
-    organisationAddress: String
-    organisationCountry: String!
-    referenceId: String!
-    adminFirstName: String!
-    adminLastName: String!
-    adminEmailAddress: String!
-    adminMobileNumber: Int!
-    adminPassword: String!
-    billingContactName: String
-    billingEmailAddress: String
-    billingAddress: String
-    billingPhoneNumber: String
-  }
-
-  type Query {
-    organizations: [Organization]!
-    organization(id: ID!): Organization
-  }
-
-  type Mutation {
-    createOrganization(input: OrganizationInput!): Organization!
-    updateOrganization(id: ID!, input: OrganizationInput!): Organization!
-    deleteOrganization(id: ID!): Organization!
-  }
-`;
-
-
-
-const resolvers = {
-  Query: {
-    organizations: async () => {
-      try {
-        const organizations = await Organization.find({});
-        return organizations;
-      } catch (err) {
-        throw new Error('Error getting organizations', err);
-      }
-    },
-    organization: async (_, { id }) => {
-      try {
-        const organization = await Organization.findById(id);
-        if (!organization) {
-          throw new Error('Organization not found');
-        }
-        return organization;
-      } catch (err) {
-        throw new Error('Error getting organization', err);
-      }
-    },
-  },
-  Mutation: {
-    createOrganization: async (_, args) => {
-      try {
-        const organization = await Organization.create(args);
-        return organization;
-      } catch (err) {
-        throw new Error('Error creating organization', err);
-      }
-    },
-    updateOrganization: async (_, { id, ...args }) => {
-      try {
-        const organization = await Organization.findByIdAndUpdate(id, args, { new: true });
-        if (!organization) {
-          throw new Error('Organization not found');
-        }
-        return organization;
-      } catch (err) {
-        throw new Error('Error updating organization', err);
-      }
-    },
-    deleteOrganization: async (_, { id }) => {
-      try {
-        const organization = await Organization.findByIdAndDelete(id);
-        if (!organization) {
-          throw new Error('Organization not found');
-        }
-        return organization;
-      } catch (err) {
-        throw new Error('Error deleting organization', err);
-      }
-    },
-  },
-};
-
-module.exports = resolvers;
-
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
 const app = express();
 
-async function startApolloServer() {
-  await server.start();
+const port = process.env.PORT;
 
-  server.applyMiddleware({ app });
+app.use(cors({
+    origin: '*',
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
+const server = http.createServer(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const resolverArray = [Organization, Admin];
+
+const typeDefs = mergeTypeDefs(
+  loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))
+);
+
+const resolvers = mergeResolvers(resolverArray);
+
+const mongo_url = process.env.MONGO_URL;
+// const dbase = process.env.MONGODB_DB;
+// const user_db = process.env.MONGODB_USER;
+// const pass_db = process.env.MONGODB_PASS;
+
+// const server = http.createServer(app);
+
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const apolloServer = new ApolloServer({
+  schema,
+  plugins: [ApolloServerPluginInlineTrace()],
+  cache: {
+    type: "bounded",
+    maxSize: 100 * 1024 * 1024 // 100 MB
+  }
+});
+
+  (async () => {
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
   
-  // your other middleware and routes here
+  SubscriptionServer.create(
+    {
+      schema: schema,
+      execute,
+      subscribe,
+      onConnect: (connectionParams, webSocket) => {
+        console.log('Client connected to  WebSocket');
+      },
+      onDisconnect: (connectionParams, webSocket) => {
+        console.log('Client disconnected to WebSocket');
+      },
+    },
+    {
+      server: server,
+      path: apolloServer.graphqlPath,
+    },
+  );
+   await mongoose.connect(`${mongo_url}`,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    console.log(mongoose.connection.readyState)
+    console.log('Connected to MongoDB');
 
-  app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-  });
-}
 
-startApolloServer();
+  server.listen({ port: process.env.PORT }, () =>
+    console.log(`Server running on http://localhost:${process.env.PORT }${apolloServer.graphqlPath}`)
+  );
+})();
+
+
+// const mongoose = require('mongoose');
+// require('dotenv').config();
+
+// mongoose.connect("mongodb://28c09e55-0ee0-4-231-b9ee:CHctnR7jP0XGbjYJepAC0dB42HBtFOH59Du0kMJ4N2IECfX2McMrf7AtyfrMOFYt62URT4Xzp8h7ACDbJ1V1UA%3D%3D@28c09e55-0ee0-4-231-b9ee.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@28c09e55-0ee0-4-231-b9ee@", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// })
+// .then(() => console.log('MongoDB Connected'))
+// .catch((err) => console.log(err));
+
+// module.exports = mongoose;

@@ -1,22 +1,9 @@
-# Logs
-logs
-*.log
-
-# Dependencies
-node_modules
-
-# Build files
-build
-dist
-
-# Environment variables
 .env
+ 
+ 
+node_modules
+node_modules/*
+docs
 
-# OS generated files
 .DS_Store
-Thumbs.db
-
-# Editor generated files
-.vscode
-*.swp
-*.swo
+.env

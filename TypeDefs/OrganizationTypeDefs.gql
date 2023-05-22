@@ -1,0 +1,48 @@
+type Organization {
+    id: ID!
+    organizationName: String!
+    abnDuns: Int
+    organizationType: String!
+    phoneNumber: Int
+    organizationAddress: String
+    organizationCountry: String!
+    referenceId: String!
+    adminFirstName: String!
+    adminLastName: String!
+    adminEmailAddress: String!
+    adminMobileNumber: Int!
+    adminPassword: String!
+    billingContactName: String
+    billingEmailAddress: String
+    billingAddress: String
+    billingPhoneNumber: String
+}
+input OrganizationInput {
+    organizationName: String!
+    abnDuns: Int
+    organizationType: String!
+    phoneNumber: Int
+    organizationAddress: String
+    organizationCountry: String!
+    referenceId: String!
+    adminFirstName: String!
+    adminLastName: String!
+    adminEmailAddress: String!
+    adminMobileNumber: Int!
+    adminPassword: String!
+    billingContactName: String
+    billingEmailAddress: String
+    billingAddress: String
+    billingPhoneNumber: String
+}
+type Query {
+    organizations: [Organization]!
+    organization(id: ID!): Organization
+}
+
+type Mutation {
+    createOrganization(input: OrganizationInput!): Organization!
+    updateOrganization(id: ID!, input: OrganizationInput!): Organization!
+    deleteOrganization(id: ID!): Organization!
+    organizationLogin(email: String!, password: String!): Organization
+}

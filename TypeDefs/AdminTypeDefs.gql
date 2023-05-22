@@ -1,0 +1,55 @@
+type Admin {
+  id: ID!
+  organizationName: String!
+  abnDuns: Int
+  organizationType: String!
+  phoneNumber: Int
+  organizationAddress: String
+  organizationCountry: String!
+  referenceId: String!
+  adminFirstName: String!
+  adminLastName: String!
+  adminEmailAddress: String!
+  adminMobileNumber: Int!
+  adminPassword: String!
+  billingContactName: String
+  billingEmailAddress: String
+  billingAddress: String
+  billingPhoneNumber: String
+  adminId: ID
+  isDisabled: Boolean
+}
+
+input AdminInput {
+  organizationName: String!
+  abnDuns: Int
+  organizationType: String!
+  phoneNumber: Int
+  organizationAddress: String
+  organizationCountry: String!
+  referenceId: String!
+  adminFirstName: String!
+  adminLastName: String!
+  adminEmailAddress: String!
+  adminMobileNumber: Int!
+  adminPassword: String!
+  billingContactName: String
+  billingEmailAddress: String
+  billingAddress: String
+  billingPhoneNumber: String
+  adminId: ID
+  isDisabled: Boolean
+}
+
+type Query {
+  admins: [Admin]!
+  admin(id: ID!): Admin
+}
+
+type Mutation {
+  createAdmin(input: AdminInput): Admin
+  updateAdmin(id: ID!, input: AdminInput!): Admin!
+  deleteAdmin(id: ID!): Admin!
+  toggleAdminDisabled(id: ID!): Admin!
+  adminLogin(email: String!, password: String!): Admin
+}
