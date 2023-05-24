@@ -12,10 +12,6 @@ type Organization {
     adminEmailAddress: String!
     adminMobileNumber: Int!
     adminPassword: String!
-    billingContactName: String
-    billingEmailAddress: String
-    billingAddress: String
-    billingPhoneNumber: String
 }
 input OrganizationInput {
     organizationName: String!
@@ -30,10 +26,6 @@ input OrganizationInput {
     adminEmailAddress: String!
     adminMobileNumber: Int!
     adminPassword: String!
-    billingContactName: String
-    billingEmailAddress: String
-    billingAddress: String
-    billingPhoneNumber: String
 }
 type Query {
     organizations: [Organization]!

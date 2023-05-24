@@ -6,10 +6,10 @@ const pubsub = new PubSub();
 const { Schema, model, Types } = mongoose;
 
 const organizationSchema = new mongoose.Schema({
-  organizationName: { type: String, required: true },
   abnDuns: { type: Number },
-  organizationType: { type: String, required: true },
   phoneNumber: { type: Number },
+  organizationName: { type: String, required: true },
+  organizationType: { type: String, required: true },
   organizationAddress: { type: String },
   organizationCountry: { type: String, required: true },
   referenceId: { type: String, required: true, maxlength: 100 },
@@ -18,10 +18,6 @@ const organizationSchema = new mongoose.Schema({
   adminEmailAddress: { type: String, required: true },
   adminMobileNumber: { type: Number, required: true },
   adminPassword: { type: String, required: true },
-  billingContactName: { type: String },
-  billingEmailAddress: { type: String },
-  billingAddress: { type: String },
-  billingPhoneNumber: { type: String }
 });
 
 export const Organization = mongoose.model('Organization', organizationSchema);

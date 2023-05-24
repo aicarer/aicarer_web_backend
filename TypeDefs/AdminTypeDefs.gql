@@ -1,16 +1,16 @@
 type Admin {
   id: ID!
   organizationName: String!
-  abnDuns: Int
+  abnDuns: String
   organizationType: String!
-  phoneNumber: Int
+  phoneNumber: String
   organizationAddress: String
   organizationCountry: String!
   referenceId: String!
   adminFirstName: String!
   adminLastName: String!
   adminEmailAddress: String!
-  adminMobileNumber: Int!
+  adminMobileNumber: String!
   adminPassword: String!
   billingContactName: String
   billingEmailAddress: String
@@ -22,16 +22,16 @@ type Admin {
 
 input AdminInput {
   organizationName: String!
-  abnDuns: Int
+  abnDuns: String
   organizationType: String!
-  phoneNumber: Int
+  phoneNumber: String
   organizationAddress: String
   organizationCountry: String!
   referenceId: String!
   adminFirstName: String!
   adminLastName: String!
   adminEmailAddress: String!
-  adminMobileNumber: Int!
+  adminMobileNumber: String!
   adminPassword: String!
   billingContactName: String
   billingEmailAddress: String
@@ -50,6 +50,7 @@ type Mutation {
   createAdmin(input: AdminInput): Admin
   updateAdmin(id: ID!, input: AdminInput!): Admin!
   deleteAdmin(id: ID!): Admin!
+  readAllAdmin: [Admin]!
   toggleAdminDisabled(id: ID!): Admin!
   adminLogin(email: String!, password: String!): Admin
 }

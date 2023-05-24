@@ -33,6 +33,14 @@ const resolvers = {
         throw new Error('Error creating admin', err);
       }
     },
+    readAllAdmin: async () => {
+      try {
+        const admins = await Admin.find({});
+        return admins;
+      } catch (err) {
+        throw new Error('Error getting admins', err);
+      }
+    },
     adminLogin: async (_, { email, password }) => {
       try {
         const admin = await Admin.findOne({ adminEmailAddress: email });
@@ -56,7 +64,8 @@ const resolvers = {
     },
     updateAdmin: async (_, { id, ...args }) => {
       try {
-        const admin = await Admin.findByIdAndUpdate(id, args, { new: true });
+        console.log(args);
+        const admin = await Admin.findByIdAndUpdate(id, args.input, { new: true });
         if (!admin) {
           throw new Error('Admin not found');
         }
