@@ -1,4 +1,4 @@
-.env
+
  
  
 node_modules
@@ -6,4 +6,3 @@ node_modules/*
 docs
 
 .DS_Store
-.env
