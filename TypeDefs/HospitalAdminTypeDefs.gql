@@ -1,11 +1,7 @@
-type Admin {
-  _id: ID
-  organizationName: String!
+type HospitalAdmin {
+  id: ID!
   abnDuns: String
-  organizationType: String!
   phoneNumber: String
-  organizationAddress: String
-  organizationCountry: String!
   referenceId: String!
   adminFirstName: String!
   adminLastName: String!
@@ -18,16 +14,11 @@ type Admin {
   billingPhoneNumber: String
   adminId: ID
   isDisabled: Boolean
-  userType: String
 }
 
-input AdminInput {
-  organizationName: String!
+input HospitalAdminInput {
   abnDuns: String
-  organizationType: String!
   phoneNumber: String
-  organizationAddress: String
-  organizationCountry: String!
   referenceId: String!
   adminFirstName: String!
   adminLastName: String!
@@ -43,15 +34,15 @@ input AdminInput {
 }
 
 type Query {
-  admins: [Admin]!
-  admin(id: ID!): Admin
+  hospitalAdmins: [HospitalAdmin]!
+  hospitalAdmin(id: ID!): HospitalAdmin
 }
 
 type Mutation {
-  createAdmin(input: AdminInput): Admin
-  updateAdmin(id: ID!, input: AdminInput!): Admin!
-  deleteAdmin(id: ID!): Admin!
-  readAllAdmin: [Admin]!
-  toggleAdminDisabled(id: ID!): Admin!
-  adminLogin(email: String!, password: String!): Admin
+  createHospitalAdmin(input: AdminInput): Admin
+  updateHospitalAdmin(id: ID!, input: AdminInput!): Admin!
+  deleteHospitalAdmin(id: ID!): Admin!
+  readAllHospitalAdmin: [Admin]!
+  toggleHospitalAdminDisabled(id: ID!): Admin!
+  hospitalAdminLogin(email: String!, password: String!): Admin
 }

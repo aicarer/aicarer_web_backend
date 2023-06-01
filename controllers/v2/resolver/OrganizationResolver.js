@@ -1,6 +1,6 @@
 
 import { Organization }  from '../../../models/v2/Organization.js';
-
+import { Admin }  from '../../../models/v2/Admin.js';
 const resolvers = {
   Query: {
     organizations: async () => {
@@ -36,23 +36,46 @@ const resolvers = {
     },
     organizationLogin: async (_, { email, password }) => {
       try {
-        const organization = await Organization.findOne({ adminEmailAddress: email });
-        if (!organization) {
-          throw new Error('Invalid email or password');
+        const admin = await Admin.findOne({adminEmailAddress: email});
+        console.log(admin);
+        const typename = {
+          ...admin.toObject(),
+          __typename: 'Admin',
+          userType: 'Admin'
+        };
+        if (!admin) {
+          // return {data: {__typename: 'Admin', data: null}};
         }
-        
-        // Here, you can implement your own logic to validate the password.
-        // For example, you can use a password hashing library like bcrypt to compare the hashed password with the provided one.
-        // Ensure that the password validation logic is secure and appropriate for your application.
-        const isValidPassword = (organization.adminPassword === password);
-        
-        if (!isValidPassword) {
-          throw new Error('Invalid email or password');
+
+        const isPasswordMatch = (admin.adminPassword === password);
+        if (!isPasswordMatch) {
+          // return {data: {__typename: 'Admin', data: null}};
         }
-        
-        return organization;
-      } catch (err) {
-        throw new Error('Error during organization login', err);
+
+        return typename;
+      } catch (doctorError) {
+        console.log(doctorError);
+      }
+
+      try {
+        const admin = await Organization.findOne({adminEmailAddress: email});
+        console.log(admin);
+        const typename = {
+          ...admin.toObject(),
+          __typename: 'Organization',
+          userType: 'Organization'
+        };
+        if (!admin) {
+          // return {data: {__typename: 'Organization', data: null}};
+        }
+
+        const isPasswordMatch = (admin.adminPassword === password);
+        if (!isPasswordMatch) {
+          // return {data: {__typename: 'Organization', data: null}};
+        }
+        return typename;
+      } catch (doctorError) {
+        console.log(doctorError);
       }
     },
     updateOrganization: async (_, { id, ...args }) => {

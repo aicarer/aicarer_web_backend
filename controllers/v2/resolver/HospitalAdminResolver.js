@@ -1,50 +1,50 @@
-import { Admin } from '../../../models/v2/Admin.js';
-import { Organization } from '../../../models/v2/Organization.js';
+import { HospitalAdmin } from '../../../models/v2/HospitalAdmin.js';
+
 const resolvers = {
   Query: {
-    admins: async () => {
+    hospitalAdmin: async () => {
       try {
-        const admins = await Admin.find({});
-        return admins;
+        const result = await HospitalAdmin.find({});
+        return result;
       } catch (err) {
         throw new Error('Error getting admins', err);
       }
     },
-    admin: async (_, { id }) => {
+    hospitalAdmins: async (_, { id }) => {
       try {
-        const admin = await Admin.findById(id);
-        if (!admin) {
+        const result = await HospitalAdminHospitalAdmin.findById(id);
+        if (!result) {
           throw new Error('Admin not found');
         }
-        return admin;
+        return result;
       } catch (err) {
         throw new Error('Error getting admin', err);
       }
     },
   },
   Mutation: {
-    createAdmin: async (_, args) => {
+    createHospitalAdmin: async (_, args) => {
       try {
         console.log(args.input);
-        const admin = await Admin.create(args.input);
-        return admin;
+        const result = await HospitalAdmin.create(args.input);
+        return result;
       } catch (err) {
         console.log(err);
         throw new Error('Error creating admin', err);
       }
     },
-    readAllAdmin: async () => {
+    readAllHospitalAdmin: async () => {
       try {
-        const admins = await Admin.find({});
-        return admins;
+        const result = await HospitalAdmin.find({});
+        return result;
       } catch (err) {
         throw new Error('Error getting admins', err);
       }
     },
-    adminLogin: async (_, { email, password }) => {
+    hospitalAdminLogin: async (_, { email, password }) => {
       try {
-        const admin = await Admin.findOne({ adminEmailAddress: email });
-        if (!admin) {
+        const result = await HospitalAdmin.findOne({ adminEmailAddress: email });
+        if (!result) {
           throw new Error('Invalid email or password');
         }
         
@@ -61,43 +61,41 @@ const resolvers = {
       } catch (err) {
         throw new Error('Error during admin login', err);
       }
-
-
     },
-    updateAdmin: async (_, { id, ...args }) => {
+    updateHospitalAdmin: async (_, { id, ...args }) => {
       try {
         console.log(args);
-        const admin = await Admin.findByIdAndUpdate(id, args.input, { new: true });
-        if (!admin) {
+        const result = await HospitalAdmin.findByIdAndUpdate(id, args.input, { new: true });
+        if (!result) {
           throw new Error('Admin not found');
         }
-        return admin;
+        return result;
       } catch (err) {
         throw new Error('Error updating admin', err);
       }
     },
-    deleteAdmin: async (_, { id }) => {
+    deleteHospitalAdmin: async (_, { id }) => {
       try {
-        const admin = await Admin.findByIdAndDelete(id);
-        if (!admin) {
+        const result = await HospitalAdmin.findByIdAndDelete(id);
+        if (!result) {
           throw new Error('Admin not found');
         }
-        return admin;
+        return result;
       } catch (err) {
         throw new Error('Error deleting admin', err);
       }
     },
-    toggleAdminDisabled: async (_, { id }) => {
+    toggleHospitalAdminDisabled: async (_, { id }) => {
         try {
-          const admin = await Admin.findById(id);
-          if (!admin) {
+          const result = await HospitalAdmin.findById(id);
+          if (!result) {
             throw new Error('Admin not found');
           }
   
-          admin.isDisabled = !admin.isDisabled;
-          await admin.save();
+          result.isDisabled = !result.isDisabled;
+          await result.save();
   
-          return admin;
+          return result;
         } catch (err) {
           throw new Error('Error toggling admin disabled', err);
         }
