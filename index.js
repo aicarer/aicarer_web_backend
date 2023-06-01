@@ -19,6 +19,7 @@ import { makeExecutableSchema }from '@graphql-tools/schema';
 // import Advertisement from './controllers/v2/resolver/AdvertisementResolver.js'
 import Organization from './controllers/v2/resolver/OrganizationResolver.js'
 import Admin from './controllers/v2/resolver/AdminResolver.js'
+import HospitalAdmin from './controllers/v2/resolver/HospitalAdminResolver.js'
 dotenv.config();
 
 const app = express();
@@ -33,7 +34,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Organization, Admin];
+const resolverArray = [Organization, Admin, HospitalAdmin];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))
