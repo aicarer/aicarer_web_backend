@@ -1,0 +1,19 @@
+type HealthData {
+    id: ID
+    heartRate: Int
+    hrv: Float
+    respiratoryRate: Float
+    timestamp: String
+  }
+
+  type Query {
+    getHealthData(id: ID): HealthData
+  }
+
+  type Mutation {
+    updateHealthData(id: ID, heartRate: Int!, hrv: Float!, respiratoryRate: Float!, timestamp: String!): HealthData
+  }
+
+  type Subscription {
+    healthDataUpdated(id: ID): HealthData
+  }
