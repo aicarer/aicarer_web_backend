@@ -10,7 +10,7 @@ const { Schema, model, Types } = mongoose;
 const hospitalAdminSchema = new Schema({
   abnDuns: { type: String },
   phoneNumber: { type: String },
-  referenceId: { type: Number },
+  referenceId: { type: String },
   adminFirstName: { type: String, required: true },
   adminLastName: { type: String, required: true },
   adminEmailAddress: { type: String, required: true },
