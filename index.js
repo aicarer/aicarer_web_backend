@@ -202,16 +202,3 @@ const apolloServer = new ApolloServer({
     console.log(`Server running on http://localhost:${process.env.PORT }${apolloServer.graphqlPath}`)
   );
 })();
-
-
-// const mongoose = require('mongoose');
-// require('dotenv').config();
-
-// mongoose.connect("mongodb://28c09e55-0ee0-4-231-b9ee:CHctnR7jP0XGbjYJepAC0dB42HBtFOH59Du0kMJ4N2IECfX2McMrf7AtyfrMOFYt62URT4Xzp8h7ACDbJ1V1UA%3D%3D@28c09e55-0ee0-4-231-b9ee.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@28c09e55-0ee0-4-231-b9ee@", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// })
-// .then(() => console.log('MongoDB Connected'))
-// .catch((err) => console.log(err));
-
-// module.exports = mongoose;
