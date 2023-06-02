@@ -25,7 +25,7 @@ import session from 'express-session';
 import Organization from './controllers/v2/resolver/OrganizationResolver.js'
 import Admin from './controllers/v2/resolver/AdminResolver.js'
 import HospitalAdmin from './controllers/v2/resolver/HospitalAdminResolver.js'
-import Garmin from './controllers/v2/resolver/GarminResolvers.js'
+import SleepData from './controllers/v2/resolver/SleepDataResolver.js'
 dotenv.config();
 
 const app = express();
@@ -88,7 +88,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Organization, Admin, Garmin, HospitalAdmin];
+const resolverArray = [Organization, Admin, Garmin];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))

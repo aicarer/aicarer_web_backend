@@ -1,0 +1,17 @@
+type DeviceStatus {
+    id: ID!
+    isOnline: Boolean
+    isOnWrist: Boolean
+    isCharging: Boolean
+    isLowBattery: Boolean
+    gpsLocation: String
+    timestamp: String
+  }
+
+  type Query {
+    getDeviceStatus(id: ID!): DeviceStatus
+  }
+
+  type Mutation {
+    updateDeviceStatus(id: ID!, isOnline: Boolean!, isOnWrist: Boolean!, isCharging: Boolean!, isLowBattery: Boolean!, gpsLocation: String!, timestamp: String!): DeviceStatus
+  }

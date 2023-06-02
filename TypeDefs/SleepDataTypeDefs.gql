@@ -1,0 +1,18 @@
+  type SleepData {
+    id: ID
+    remSleep: Int
+    deepSleep: Int
+    lightSleep: Int
+    awakeTime: Int
+    sleepEfficiency: Float
+    sleepStart: String
+    sleepEnd: String
+  }
+
+  type Query {
+    getSleepData(id: ID): SleepData
+  }
+
+  type Mutation {
+    updateSleepData(id: ID, remSleep: Int, deepSleep: Int, lightSleep: Int, awakeTime: Int, sleepEfficiency: Float, sleepStart: String, sleepEnd: String): SleepData
+  }
