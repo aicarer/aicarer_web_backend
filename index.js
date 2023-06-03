@@ -88,7 +88,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Organization, Admin, Garmin];
+const resolverArray = [Organization, Admin];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))
