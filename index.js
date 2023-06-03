@@ -26,6 +26,7 @@ import Organization from './controllers/v2/resolver/OrganizationResolver.js'
 import Admin from './controllers/v2/resolver/AdminResolver.js'
 import HospitalAdmin from './controllers/v2/resolver/HospitalAdminResolver.js'
 import SleepData from './controllers/v2/resolver/SleepDataResolver.js'
+
 dotenv.config();
 
 const app = express();
@@ -88,7 +89,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Organization, Admin];
+const resolverArray = [Organization, Admin, HospitalAdmin, SleepData];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))
@@ -148,7 +149,6 @@ const apolloServer = new ApolloServer({
 
       const temporaryToken = req.session.temporaryToken;
       const temporaryTokenSecret = req.session.temporaryTokenSecret;
-      const oauthToken = req.query.oauth_token;
       const oauth = new OAuth({
           consumer: {
             key: consumerKey,
@@ -178,23 +178,19 @@ const apolloServer = new ApolloServer({
       }
   
       const headers = oauth.toHeader(oauth.authorize(accessRequestData, whineToken));
-      console.log("WHINEYYY")
-      // console.log(headers)
       const response = await axios.post(accessRequestData.url, null, { headers });
   
       const accessToken = response.data.split('&')[0].split('=')[1];
       const accessTokenSecret = response.data.split('&')[1].split('=')[1];
   
-      // console.log("WHINE LEGIT ACCESS TOKEN")
-      // console.log(accessToken)
-      // console.log("WHINE LEGIT TOKEN SECRET")
-      // console.log(accessTokenSecret)
-  
       const result = {
           accessToken,
           accessTokenSecret
       }
-      res.json(result)
+      res.status(200).json({
+        status: 200,
+        body: result,
+      });
   
     });
 
