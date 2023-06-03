@@ -145,54 +145,79 @@ const apolloServer = new ApolloServer({
     console.log('Connected to MongoDB');
 
 // Callback URL
-    app.get('/callback', async (req, res) => {
+app.get('/callback', async (req, res) => {
+  const temporaryToken = req.session.temporaryToken;
+  const temporaryTokenSecret = req.session.temporaryTokenSecret;
+  const oauth = new OAuth({
+    consumer: {
+      key: consumerKey,
+      secret: consumerSecret
+    },
+    signature_method: 'HMAC-SHA1',
+    hash_function: (baseString, key) =>
+      crypto.createHmac('sha1', key).update(baseString).digest('base64')
+  });
 
-      const temporaryToken = req.session.temporaryToken;
-      const temporaryTokenSecret = req.session.temporaryTokenSecret;
-      const oauth = new OAuth({
-          consumer: {
-            key: consumerKey,
-            secret: consumerSecret
-          },
-          signature_method: 'HMAC-SHA1',
-          hash_function: (baseString, key) =>
-            crypto.createHmac('sha1', key).update(baseString).digest('base64')
-      });
-  
-  
-      const oauthVerifier = req.query.oauth_verifier;
-  
-  
-      const accessRequestData = {
-          url: 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
-          method: 'POST',
-          data: {
-              oauth_verifier: oauthVerifier
-          },
-          
-      };
-  
-      const whineToken = {
-          key: temporaryToken,
-          secret: temporaryTokenSecret
-      }
-  
-      const headers = oauth.toHeader(oauth.authorize(accessRequestData, whineToken));
-      const response = await axios.post(accessRequestData.url, null, { headers });
-  
-      const accessToken = response.data.split('&')[0].split('=')[1];
-      const accessTokenSecret = response.data.split('&')[1].split('=')[1];
-  
+  const oauthVerifier = req.query.oauth_verifier;
+
+  const accessRequestData = {
+    url: 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
+    method: 'POST',
+    data: {
+      oauth_verifier: oauthVerifier
+    }
+  };
+
+  const whineToken = {
+    key: temporaryToken,
+    secret: temporaryTokenSecret
+  };
+
+  const headers = oauth.toHeader(oauth.authorize(accessRequestData, whineToken));
+
+  try {
+    const response = await axios.post(accessRequestData.url, null, { headers });
+
+    const responseData = response.data;
+    const accessToken = getValueFromResponse(responseData, 'oauth_token');
+    const accessTokenSecret = getValueFromResponse(responseData, 'oauth_token_secret');
+
+    if (accessToken && accessTokenSecret) {
       const result = {
-          accessToken,
-          accessTokenSecret
-      }
+        accessToken,
+        accessTokenSecret
+      };
+
       res.status(200).json({
         status: 200,
-        body: result,
+        body: result
       });
-  
+    } else {
+      res.status(500).json({
+        status: 500,
+        message: 'Access token retrieval failed'
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 500,
+      message: 'Internal Server Error'
     });
+  }
+});
+
+// Helper function to extract value from response string
+function getValueFromResponse(responseData, key) {
+  const parts = responseData.split('&');
+  for (const part of parts) {
+    const [responseKey, value] = part.split('=');
+    if (responseKey === key) {
+      return value;
+    }
+  }
+  return null;
+}
 
   server.listen({ port: process.env.PORT }, () =>
     console.log(`Server running on http://localhost:${process.env.PORT }${apolloServer.graphqlPath}`)
