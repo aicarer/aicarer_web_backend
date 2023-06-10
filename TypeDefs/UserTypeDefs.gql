@@ -1,0 +1,82 @@
+scalar Date
+
+type User {
+  _id: ID
+  firstName: String!
+  middleName: String
+  lastName: String!
+  mobileNumber: String!
+  otherPhone: String
+  email: String!
+  address: String!
+  birthDate: String!
+  gender: String!
+  occupation: String
+  height: String
+  weight: String
+  medicalCondition: String
+  password: String!
+  medication: String
+  culturalBackground: String
+  socialEngagements: String
+  exercise: String
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+input UserInput {
+  firstName: String!
+  middleName: String
+  lastName: String!
+  mobileNumber: String!
+  otherPhone: String
+  email: String!
+  address: String!
+  birthDate: String!
+  gender: String!
+  occupation: String
+  height: String
+  weight: String
+  medicalCondition: String
+  password: String!
+  medication: String
+  culturalBackground: String
+  socialEngagements: String
+  exercise: String
+}
+
+input EditUserInput {
+  firstName: String
+  middleName: String
+  lastName: String
+  mobileNumber: String
+  otherPhone: String
+  email: String
+  address: String
+  birthDate: String
+  gender: String
+  occupation: String
+  height: String
+  weight: String
+  medicalCondition: String
+  password: String
+  medication: String
+  culturalBackground: String
+  socialEngagements: String
+  exercise: String
+}
+
+type Query {
+  users: [User]!
+  user(id: ID!): User
+}
+
+type Mutation {
+  createUser(input: UserInput): User
+  updateUser(id: ID!, input: EditUserInput): User!
+  deleteUser(id: ID!): User!
+  readAllUsers: [User]!
+  toggleUserDisabled(id: ID!): User!
+  userLogin(email: String!, password: String!): User
+}

@@ -26,6 +26,12 @@ const adminSchema = new Schema({
   billingPhoneNumber: { type: String },
   organizationId: { type: Schema.Types.ObjectId, ref: 'Organization' },
   isDisabled: { type: Boolean, default: false },
+  mfaEnabled: { type: Boolean, default: true },
+  mfaCode: { type: String, default: null },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  deletedAt: { type: Date },
+  mfaExpiry: { type: Date, default: null }
 });
 
 export const Admin = model('Admin', adminSchema);

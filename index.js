@@ -17,14 +17,15 @@ import OAuth from 'oauth-1.0a';
 import axios from 'axios';
 import crypto from 'crypto';
 import session from 'express-session';
-
+// import {CosmosSessionStore} from 'express-session-cosmosdb';
 
 //resolvers to be refactor later
 
 // import Advertisement from './controllers/v2/resolver/AdvertisementResolver.js'
+import Date from './controllers/v2/resolver/DateResolver.js'
 import Organization from './controllers/v2/resolver/OrganizationResolver.js'
 import Admin from './controllers/v2/resolver/AdminResolver.js'
-import HospitalAdmin from './controllers/v2/resolver/HospitalAdminResolver.js'
+import User from './controllers/v2/resolver/UserResolver.js'
 import SleepData from './controllers/v2/resolver/SleepDataResolver.js'
 
 dotenv.config();
@@ -35,12 +36,21 @@ const port = process.env.PORT;
 const consumerKey = process.env.GARMIN_CLIENT_ID;
 const consumerSecret = process.env.GARMIN_CLIENT_SECRET;
 
+// const store = new CosmosSessionStore({
+//   endpoint: "https://aicarer-db.mongo.cosmos.azure.com:10255",
+//   database: "aicarer-db",
+//   collection: "session",
+//   key: "aLqMqgo9J9XiOuyZN0NS2R431gKdiF6iUJPukKlL2526I102ASqnPYRhWyr5dd15NgJllxFwSkanACDbpHUNzw==",
+  
+// });
+
 app.use(cors({
     origin: '*',
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 app.set("trust proxy", 1);
 app.use(session({
+  // store,
   secret: 'ai-carer-garmin',
   resave: false,
   saveUninitialized: true,
@@ -95,7 +105,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Organization, Admin, HospitalAdmin, SleepData];
+const resolverArray = [Date, Organization, Admin, User, SleepData];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))

@@ -1,3 +1,5 @@
+scalar Date
+
 type Organization {
   _id: ID
   organizationName: String!
@@ -13,6 +15,9 @@ type Organization {
   adminMobileNumber: Int!
   adminPassword: String!
   userType: String
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
 }
 input OrganizationInput {
   organizationName: String!
@@ -37,7 +42,11 @@ type Mutation {
   createOrganization(input: OrganizationInput!): Organization!
   updateOrganization(id: ID!, input: OrganizationInput!): Organization!
   deleteOrganization(id: ID!): Organization!
-  organizationLogin(email: String!, password: String!): LoginUnion
+  organizationLogin(
+    email: String!
+    password: String!
+    mfaCode: String
+  ): LoginUnion
 }
 
 union LoginUnion = Admin | Organization

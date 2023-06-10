@@ -18,6 +18,9 @@ const organizationSchema = new mongoose.Schema({
   adminEmailAddress: { type: String, required: true },
   adminMobileNumber: { type: Number, required: true },
   adminPassword: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  deletedAt: { type: Date },
 });
 
 export const Organization = mongoose.model('Organization', organizationSchema);

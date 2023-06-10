@@ -1,3 +1,5 @@
+scalar Date
+
 type Admin {
   _id: ID
   organizationName: String!
@@ -19,6 +21,12 @@ type Admin {
   adminId: ID
   isDisabled: Boolean
   userType: String
+  mfaEnabled: Boolean!
+  mfaCode: String
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+  mfaExpiry: Date
 }
 
 input AdminInput {
@@ -53,5 +61,6 @@ type Mutation {
   deleteAdmin(id: ID!): Admin!
   readAllAdmin: [Admin]!
   toggleAdminDisabled(id: ID!): Admin!
-  adminLogin(email: String!, password: String!): Admin
+  adminLogin(email: String!, password: String!, mfaCode: String): Admin
+  enableMFA(email: String): Boolean
 }

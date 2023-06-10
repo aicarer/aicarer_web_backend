@@ -1,6 +1,7 @@
 
 import { Organization }  from '../../../models/v2/Organization.js';
 import { Admin }  from '../../../models/v2/Admin.js';
+import { validateMFA,generateMFA, sendMFAEmail, updateUser } from '../../../public/service/mfaService.js';
 const resolvers = {
   Query: {
     organizations: async () => {
@@ -34,32 +35,42 @@ const resolvers = {
         throw new Error('Error creating organization', err);
       }
     },
-    organizationLogin: async (_, { email, password }) => {
+    organizationLogin: async (_, { email, password, mfaCode }) => {
+      console.log("MFACODE", mfaCode);
       try {
-        const admin = await Admin.findOne({adminEmailAddress: email});
-        console.log(admin);
-        const typename = {
-          ...admin.toObject(),
-          __typename: 'Admin',
-          userType: 'Admin'
-        };
-        if (!admin) {
-          // return {data: {__typename: 'Admin', data: null}};
+        const admin = await Admin.findOne({ adminEmailAddress: email });
+        console.log(admin.password !== password);
+        console.log(admin.adminPassword);
+        console.log(password);
+        if (!admin || admin.adminPassword !== password) {
+          throw new Error('Invalid email or password');
         }
+  
+        if (admin.mfaEnabled) {
+          if (!mfaCode) {
+            throw new Error('MFAREQUIRED');
+          }
+  
+          const isValidCode = validateMFA(admin, mfaCode);
+          console.log(isValidCode);
+          if (!isValidCode) {
+            throw new Error('Invalid MFA code or code has expired');
+          }
 
-        const isPasswordMatch = (admin.adminPassword === password);
-        if (!isPasswordMatch) {
-          // return {data: {__typename: 'Admin', data: null}};
+          const typename = {
+            ...admin.toObject(),
+            __typename: 'Admin',
+            userType: 'Admin'
+          };
+          console.log(admin);
+          return typename;
         }
-
-        return typename;
-      } catch (doctorError) {
-        console.log(doctorError);
+      } catch (error) {
+        throw new Error(error.message);
       }
 
       try {
         const admin = await Organization.findOne({adminEmailAddress: email});
-        console.log(admin);
         const typename = {
           ...admin.toObject(),
           __typename: 'Organization',
@@ -74,9 +85,24 @@ const resolvers = {
           // return {data: {__typename: 'Organization', data: null}};
         }
         return typename;
-      } catch (doctorError) {
-        console.log(doctorError);
+      } catch (error) {
+        throw new Error(error.message);
       }
+    },
+    enableMFA: async (_, { email }) => {
+      const user = await Admin.findOne({ adminEmailAddress: email });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const mfaCode = generateMFA(user);
+      sendMFAEmail(user.adminEmailAddress, mfaCode);
+
+      user.mfaEnabled = true;
+      await updateUser(user);
+
+      return true;
     },
     updateOrganization: async (_, { id, ...args }) => {
       try {

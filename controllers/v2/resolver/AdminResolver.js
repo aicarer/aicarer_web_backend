@@ -1,5 +1,6 @@
 import { Admin } from '../../../models/v2/Admin.js';
 import { Organization } from '../../../models/v2/Organization.js';
+import { validateMFA,generateMFA, sendMFAEmail, updateUser } from '../../../public/service/mfaService.js';
 const resolvers = {
   Query: {
     admins: async () => {
@@ -41,28 +42,42 @@ const resolvers = {
         throw new Error('Error getting admins', err);
       }
     },
-    adminLogin: async (_, { email, password }) => {
+    adminLogin: async (_, { email, password, mfaCode }) => {
       try {
         const admin = await Admin.findOne({ adminEmailAddress: email });
-        if (!admin) {
+
+        if (!admin || admin.password !== password) {
           throw new Error('Invalid email or password');
         }
-        
-        // Here, you can implement your own logic to validate the password.
-        // For example, you can use a password hashing library like bcrypt to compare the hashed password with the provided one.
-        // Ensure that the password validation logic is secure and appropriate for your application.
-        const isValidPassword = (admin.adminPassword === password);
-        
-        if (!isValidPassword) {
-          throw new Error('Invalid email or password');
+  
+        if (admin.mfaEnabled) {
+          if (!mfaCode) {
+            throw new Error('MFA code is required');
+          }
+  
+          const isValidCode = validateMFA(admin, mfaCode);
+          if (!isValidCode) {
+            throw new Error('Invalid MFA code or code has expired');
+          }
         }
-        
-        return admin;
       } catch (err) {
         throw new Error('Error during admin login', err);
       }
+    },
+    enableMFA: async (_, { email }) => {
+      const user = await Admin.findOne({ adminEmailAddress: email });
 
+      if (!user) {
+        throw new Error('User not found');
+      }
 
+      const mfaCode = generateMFA(user);
+      sendMFAEmail(user.adminEmailAddress, mfaCode);
+
+      user.mfaEnabled = true;
+      await updateUser(user);
+
+      return true;
     },
     updateAdmin: async (_, { id, ...args }) => {
       try {
