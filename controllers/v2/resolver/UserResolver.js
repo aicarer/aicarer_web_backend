@@ -43,7 +43,7 @@ const resolvers = {
     },
     userLogin: async (_, { email, password }) => {
       try {
-        const result = await User.findOne({ adminEmailAddress: email });
+        const result = await User.findOne({ email: email });
         if (!result) {
           throw new Error('Invalid email or password');
         }
@@ -51,7 +51,7 @@ const resolvers = {
         // Here, you can implement your own logic to validate the password.
         // For example, you can use a password hashing library like bcrypt to compare the hashed password with the provided one.
         // Ensure that the password validation logic is secure and appropriate for your application.
-        const isValidPassword = (result.adminPassword === password);
+        const isValidPassword = (result.password === password);
         
         if (!isValidPassword) {
           throw new Error('Invalid email or password');
