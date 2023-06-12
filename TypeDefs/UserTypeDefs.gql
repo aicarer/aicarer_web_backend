@@ -20,6 +20,7 @@ type User {
   culturalBackground: String
   socialEngagements: String
   exercise: String
+  referenceId: String
   createdAt: Date
   updatedAt: Date
   deletedAt: Date
@@ -44,6 +45,7 @@ input UserInput {
   culturalBackground: String
   socialEngagements: String
   exercise: String
+  referenceId: String
 }
 
 input EditUserInput {
@@ -76,7 +78,7 @@ type Mutation {
   createUser(input: UserInput): User
   updateUser(id: ID!, input: EditUserInput): User!
   deleteUser(id: ID!): User!
-  readAllUsers: [User]!
+  readAllUsers(referenceId: String!): [User]!
   toggleUserDisabled(id: ID!): User!
   userLogin(email: String!, password: String!): User
 }

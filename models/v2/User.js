@@ -28,6 +28,7 @@ const userSchema = new Schema({
   exercise: { type: String },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  referenceId: {type: String},
   deletedAt: { type: Date },
 });
 

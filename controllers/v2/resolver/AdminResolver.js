@@ -27,12 +27,37 @@ const resolvers = {
     createAdmin: async (_, args) => {
       try {
         console.log(args.input);
+        const { referenceId } = args.input;
+    
+        // Check if an admin with the same referenceId already exists
+        const existingAdmin = await Admin.findOne({ referenceId });
+        if (existingAdmin) {
+          throw new Error('An admin with the same referenceId already exists');
+        }
+
+
         const admin = await Admin.create(args.input);
         return admin;
+
       } catch (err) {
         console.log(err);
-        throw new Error('Error creating admin', err);
+        throw new Error(err.message);
       }
+    },
+    checkIfRefferenceIdExist: async(_,args) => {
+      console.log(args)
+      const { referenceId } = args;
+    
+      // Check if an admin with the same referenceId already exists
+      const existingAdmin = await Admin.findOne({ referenceId });
+      if (existingAdmin) {
+        return true
+      }
+      else{
+        return false
+      }
+
+
     },
     readAllAdmin: async () => {
       try {

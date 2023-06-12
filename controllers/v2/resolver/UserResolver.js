@@ -33,9 +33,10 @@ const resolvers = {
         throw new Error('Error creating user', err);
       }
     },
-    readAllUsers: async () => {
+    readAllUsers: async (_, {referenceId}) => {
       try {
-        const result = await User.find({});
+        const result = await User.find({referenceId: referenceId});
+        console.log(result);
         return result;
       } catch (err) {
         throw new Error('Error getting users', err);

@@ -48,13 +48,13 @@ const resolvers = {
   
         if (admin.mfaEnabled) {
           if (!mfaCode) {
-            throw new Error('MFAREQUIRED');
+            return new Error('MFAREQUIRED');
           }
   
           const isValidCode = validateMFA(admin, mfaCode);
           console.log(isValidCode);
           if (!isValidCode) {
-            throw new Error('Invalid MFA code or code has expired');
+            return new Error('Invalid MFA code or code has expired');
           }
 
           const typename = {
@@ -66,11 +66,12 @@ const resolvers = {
           return typename;
         }
       } catch (error) {
-        throw new Error(error.message);
+        console.log(error.message)
       }
 
       try {
         const admin = await Organization.findOne({adminEmailAddress: email});
+        console.log("FOUND")
         const typename = {
           ...admin.toObject(),
           __typename: 'Organization',
@@ -86,7 +87,7 @@ const resolvers = {
         }
         return typename;
       } catch (error) {
-        throw new Error(error.message);
+        console.log(error.message)
       }
     },
     enableMFA: async (_, { email }) => {

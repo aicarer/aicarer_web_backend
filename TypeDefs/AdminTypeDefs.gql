@@ -63,4 +63,5 @@ type Mutation {
   toggleAdminDisabled(id: ID!): Admin!
   adminLogin(email: String!, password: String!, mfaCode: String): Admin
   enableMFA(email: String): Boolean
+  checkIfRefferenceIdExist(referenceId: String): Boolean
 }
