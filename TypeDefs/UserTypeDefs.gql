@@ -14,19 +14,49 @@ type User {
   occupation: String
   height: String
   weight: String
-  medicalCondition: String
   password: String!
   medication: String
   culturalBackground: String
   socialEngagements: String
   exercise: String
   referenceId: String
+  anyMedication: String
+  medicalConditions: [String]
+  otherMedicalCondition: String
+  otherPrefixNumber: String
+  prefixNumber: String
   createdAt: Date
   updatedAt: Date
   deletedAt: Date
 }
 
 input UserInput {
+  firstName: String!
+  middleName: String
+  lastName: String!
+  mobileNumber: String!
+  otherPhone: String
+  email: String!
+  address: String!
+  birthDate: String!
+  gender: String!
+  occupation: String
+  height: String
+  weight: String
+  password: String!
+  medication: String
+  culturalBackground: String
+  socialEngagements: String
+  exercise: String
+  referenceId: String
+  medicalConditions: [String]
+  otherMedicalCondition: String
+  otherPrefixNumber: String
+  prefixNumber: String
+  anyMedication: String
+}
+
+input EditUserInput {
   firstName: String!
   middleName: String
   lastName: String!
@@ -46,27 +76,11 @@ input UserInput {
   socialEngagements: String
   exercise: String
   referenceId: String
-}
-
-input EditUserInput {
-  firstName: String
-  middleName: String
-  lastName: String
-  mobileNumber: String
-  otherPhone: String
-  email: String
-  address: String
-  birthDate: String
-  gender: String
-  occupation: String
-  height: String
-  weight: String
-  medicalCondition: String
-  password: String
-  medication: String
-  culturalBackground: String
-  socialEngagements: String
-  exercise: String
+  anyMedication: String
+  medicalConditions: [String]
+  otherMedicalCondition: String
+  otherPrefixNumber: String
+  prefixNumber: String
 }
 
 type Query {
