@@ -1,0 +1,55 @@
+scalar Date
+
+type Carer {
+  _id: ID
+  firstName: String!
+  middleName: String
+  lastName: String!
+  prefixNumber: String
+  mobileNumber: String!
+  email: String!
+  address: String!
+  birthDate: String!
+  referenceId: String
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+input CarerInput {
+  firstName: String!
+  middleName: String
+  lastName: String!
+  prefixNumber: String
+  mobileNumber: String!
+  email: String!
+  address: String!
+  birthDate: String!
+  referenceId: String
+}
+
+input EditCarerInput {
+  firstName: String!
+  middleName: String
+  lastName: String!
+  prefixNumber: String
+  mobileNumber: String!
+  email: String!
+  address: String!
+  birthDate: String!
+  referenceId: String
+}
+
+type Query {
+  carers: [Carer]!
+  carer(id: ID!): Carer
+}
+
+type Mutation {
+  createCarer(input: CarerInput): Carer
+  updateCarer(id: ID!, input: EditCarerInput): Carer!
+  deleteCarer(id: ID!): Carer!
+  readAllCarers(referenceId: String!): [Carer]!
+  toggleCarerDisabled(id: ID!): Carer!
+  carerLogin(email: String!, password: String!): Carer
+}

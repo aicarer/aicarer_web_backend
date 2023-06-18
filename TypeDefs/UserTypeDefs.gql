@@ -28,6 +28,9 @@ type User {
   createdAt: Date
   updatedAt: Date
   deletedAt: Date
+  mfaEnabled: Boolean
+  mfaCode: String
+  mfaExpiry: Date
 }
 
 input UserInput {
@@ -95,4 +98,5 @@ type Mutation {
   readAllUsers(referenceId: String!): [User]!
   toggleUserDisabled(id: ID!): User!
   userLogin(email: String!, password: String!): User
+  validateMFAUser(email: String!, mfaCode: String): Boolean
 }

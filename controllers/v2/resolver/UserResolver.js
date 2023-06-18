@@ -1,5 +1,5 @@
 import { User } from '../../../models/v2/User.js';
-
+import { validateMFA,generateMFA, sendMFAEmail, updateUser } from '../../../public/service/mfaService.js';
 const resolvers = {
   Query: {
     user: async () => {
@@ -26,11 +26,35 @@ const resolvers = {
     createUser: async (_, args) => {
       try {
         console.log(args.input);
-        const result = await User.create(args.input);
-        return result;
+        const user = await User.create(args.input);
+
+        const mfaCode = generateMFA(user);
+        sendMFAEmail(user.email, mfaCode);
+        user.mfaCode = mfaCode;
+        await updateUser(user);
+
+        return user;
       } catch (err) {
         console.log(err);
         throw new Error('Error creating user', err);
+      }
+    },
+    validateMFAUser: async (_,input) =>{
+      console.log(input.mfaCode)
+      try {
+        const result = await User.findOne({ email: input.email })
+        console.log(result);
+        if(result){
+          const isValidCode = validateMFA(result, input.mfaCode );
+          console.log(isValidCode);
+    
+          return isValidCode
+        }else{
+          return false
+        }
+        return false
+      } catch (error) {
+        return false
       }
     },
     readAllUsers: async (_, {referenceId}) => {

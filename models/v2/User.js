@@ -33,6 +33,9 @@ const userSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
   referenceId: {type: String},
   deletedAt: { type: Date },
+  mfaEnabled: { type: Boolean, default: true },
+  mfaCode: { type: String, default: null },
+  mfaExpiry: { type: Date, default: null }
 });
 
 export const User = model('User', userSchema);

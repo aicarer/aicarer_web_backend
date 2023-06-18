@@ -27,6 +27,7 @@ import Organization from './controllers/v2/resolver/OrganizationResolver.js'
 import Admin from './controllers/v2/resolver/AdminResolver.js'
 import User from './controllers/v2/resolver/UserResolver.js'
 import SleepData from './controllers/v2/resolver/SleepDataResolver.js'
+import Carer from './controllers/v2/resolver/CarerResolver.js'
 
 dotenv.config();
 
@@ -105,7 +106,7 @@ const server = http.createServer(app);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const resolverArray = [Date, Organization, Admin, User, SleepData];
+const resolverArray = [Date, Organization, Admin, User, SleepData, Carer];
 
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, './TypeDefs/*.gql'))
